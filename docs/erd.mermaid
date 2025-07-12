@@ -1,0 +1,96 @@
+erDiagram
+    users {
+        UUID id PK
+        TEXT username
+        TEXT role
+
+        TIMESTAMP created_at
+        UUID created_by
+        TIMESTAMP updated_at
+        UUID updated_by
+    }
+
+    items {
+        BIGINT id PK
+        TEXT name UK
+        TEXT item_type
+        TEXT image_url
+
+        TIMESTAMP created_at
+        UUID created_by
+        TIMESTAMP updated_at
+        UUID updated_by
+    }
+
+    recipes {
+        BIGINT id PK
+        TEXT name
+        BIGINT result_item_id FK
+        INT result_quantity
+        TEXT recipe_type
+        INT required_level
+
+        TIMESTAMP created_at
+        UUID created_by
+        TIMESTAMP updated_at
+        UUID updated_by
+    }
+
+    recipe_materials {
+        BIGINT recipe_id PK,FK
+        BIGINT item_id PK,FK
+        INT item_quantity
+
+        TIMESTAMP created_at
+        UUID created_by
+        TIMESTAMP updated_at
+        UUID updated_by
+    }
+
+    worlds {
+        INT id PK
+        TEXT name
+        BOOL is_active
+
+        TIMESTAMP created_at
+        UUID created_by
+        TIMESTAMP updated_at
+        UUID updated_by
+    }
+
+    user_item_prices {
+        UUID user_id PK,FK
+        BIGINT item_id PK,FK
+        INT world_id PK,FK
+        TIMESTAMP recorded_at PK
+        BIGINT price
+
+        TIMESTAMP created_at
+        UUID created_by
+        TIMESTAMP updated_at
+        UUID updated_by
+    }
+
+    official_prices {
+        BIGINT item_id PK,FK
+        INT world_id PK,FK
+        TIMESTAMP recorded_at PK
+        BIGINT price
+
+        TIMESTAMP created_at
+        UUID created_by
+        TIMESTAMP updated_at
+        UUID updated_by
+    }
+
+    users ||--o{ user_item_prices : ""
+    items ||--o{ user_item_prices : ""
+    worlds ||--o{ user_item_prices : ""
+
+    items ||--o{ official_prices : ""
+    worlds ||--o{ official_prices : ""
+
+    recipes ||--|{ recipe_materials : ""
+    items ||--|{ recipe_materials : ""
+
+    items }o..|| recipes : ""
