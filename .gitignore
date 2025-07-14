@@ -27,6 +27,9 @@ dist-ssr
 .env
 .env.local
 
+# docs
+docs/private
+
 # Yarn (Not Using Zero-Install)
 # https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
 .pnp.*
