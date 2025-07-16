@@ -17,7 +17,7 @@ export const router = createBrowserRouter([
             element: <MainView />,
           },
           {
-            path: paths.admin,
+            path: paths.admin.root,
             element: (
               <OnlyAdminGuard>
                 <div>Admin</div>

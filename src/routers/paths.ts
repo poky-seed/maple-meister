@@ -1,5 +1,13 @@
 export const paths = {
   root: '/',
   login: '/login',
-  admin: '/admin',
+  items: '/items',
+  recipes: '/recipes',
+
+  admin: {
+    root: '/admin',
+    items: '/admin/items',
+    recipes: '/admin/recipes',
+    world: '/admin/world',
+  },
 }
