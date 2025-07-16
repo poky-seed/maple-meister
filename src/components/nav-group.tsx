@@ -9,6 +9,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
+import { Link } from 'react-router'
 
 export interface SidebarItem {
   title: string
@@ -28,12 +29,12 @@ export function NavGroup({ title, items }: { title: string; items: SidebarItem[]
       <SidebarMenu>
         {items.map((item, i) => (
           <SidebarMenuItem key={i}>
-            <a href={item.url}>
-              <SidebarMenuButton tooltip={item.title} className="cursor-pointer">
+            <SidebarMenuButton tooltip={item.title} className="cursor-pointer" asChild>
+              <Link to={item.url}>
                 {item.icon && <item.icon />}
                 <span>{item.title}</span>
-              </SidebarMenuButton>
-            </a>
+              </Link>
+            </SidebarMenuButton>
           </SidebarMenuItem>
         ))}
       </SidebarMenu>

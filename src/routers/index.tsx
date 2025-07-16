@@ -1,8 +1,9 @@
 import { LoginView, MainView } from '@/views'
 import { AppLayout, RootLayout } from '@/views/layout'
-import { createBrowserRouter } from 'react-router'
-import { paths } from './paths'
 import { OnlyAdminGuard, OnlyPublicGuard } from '@/auth'
+import { paths } from './paths'
+import { createBrowserRouter, Outlet } from 'react-router'
+import { adminRoutes } from './admin-routes'
 
 export const router = createBrowserRouter([
   {
@@ -20,9 +21,10 @@ export const router = createBrowserRouter([
             path: paths.admin.root,
             element: (
               <OnlyAdminGuard>
-                <div>Admin</div>
+                <Outlet />
               </OnlyAdminGuard>
             ),
+            children: adminRoutes,
           },
         ],
       },

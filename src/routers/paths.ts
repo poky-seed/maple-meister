@@ -8,6 +8,6 @@ export const paths = {
     root: '/admin',
     items: '/admin/items',
     recipes: '/admin/recipes',
-    world: '/admin/world',
+    world: '/admin/worlds',
   },
 }
