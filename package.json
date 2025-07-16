@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "supa:start": "supabase start",
-    "supa:stop": "supabase stop"
+    "supa:stop": "supabase stop",
+    "supa:restart": "supabase stop && supabase start"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.51.0",

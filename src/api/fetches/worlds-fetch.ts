@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/entities/database'
+import type { World } from '@/entities/worlds'
 
 const supabase = createClient<Database>(
   import.meta.env.VITE_SUPABASE_URL!,
@@ -7,11 +8,14 @@ const supabase = createClient<Database>(
 )
 
 export const worldsFetch = {
-  getWorlds: async (): Promise<Database['public']['Tables']['worlds']['Row'][]> => {
-    const { data, error } = await supabase.from('worlds').select('*')
+  getWorlds: async (): Promise<World[]> => {
+    const { data, error } = await supabase.from('worlds').select('*').eq('is_active', true)
     if (error) {
       throw error
     }
-    return data
+    return data.map((world) => ({
+      id: world.id,
+      name: world.name,
+    }))
   },
 }

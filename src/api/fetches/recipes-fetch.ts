@@ -1,40 +1,14 @@
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/entities/database'
+import type { Recipe, RecipeSimple } from '@/entities/recipes'
 
 const supabase = createClient<Database>(
   import.meta.env.VITE_SUPABASE_URL!,
   import.meta.env.VITE_SUPABASE_ANON_KEY!
 )
 
-// API 명세에 맞는 응답 타입들
-interface RecipeListItem {
-  id: number
-  name: string
-  type: string
-  resultItemImageUrl: string
-}
-
-interface Item {
-  id: number
-  name: string
-  type: string
-  imageUrl: string
-}
-
-interface RecipeDetail {
-  id: number
-  name: string
-  type: string
-  materials: {
-    item: Item
-    quantity: number
-  }[]
-  resultItem: Item
-  resultQuantity: number
-}
-
 export const recipesFetch = {
-  getRecipes: async (): Promise<RecipeListItem[]> => {
+  getRecipes: async (): Promise<RecipeSimple[]> => {
     const { data, error } = await supabase.from('recipes').select(`
         id,
         name,
@@ -56,7 +30,7 @@ export const recipesFetch = {
     }))
   },
 
-  getRecipeById: async (recipeId: number): Promise<RecipeDetail> => {
+  getRecipeById: async (recipeId: number): Promise<Recipe> => {
     const { data, error } = await supabase
       .from('recipes')
       .select(
@@ -64,6 +38,7 @@ export const recipesFetch = {
         id,
         name,
         recipe_type,
+        required_level,
         result_quantity,
         result_items:items!recipes_result_item_id_fkey (
           id,
@@ -93,6 +68,7 @@ export const recipesFetch = {
       id: data.id,
       name: data.name,
       type: data.recipe_type,
+      requiredLevel: data.required_level,
       materials: data.recipe_materials.map((material) => ({
         item: {
           id: material.items!.id,
