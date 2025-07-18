@@ -19,6 +19,20 @@ export const worldsFetch = {
       id: world.id,
       name: world.name,
       logo: world.logo,
+      isActive: world.is_active,
+    }))
+  },
+
+  getAllWorlds: async (): Promise<World[]> => {
+    const { data, error } = await supabase.from('worlds').select('*')
+    if (error) {
+      throw error
+    }
+    return data.map((world) => ({
+      id: world.id,
+      name: world.name,
+      logo: world.logo,
+      isActive: world.is_active,
     }))
   },
 
@@ -43,6 +57,34 @@ export const worldsFetch = {
         name: request.name,
         logo: logoUrl,
       })
+      .select()
+      .single()
+
+    if (error) {
+      throw error
+    }
+    return data
+  },
+
+  activateWorldById: async (worldId: number) => {
+    const { data, error } = await supabase
+      .from('worlds')
+      .update({ is_active: true })
+      .eq('id', worldId)
+      .select()
+      .single()
+
+    if (error) {
+      throw error
+    }
+    return data
+  },
+
+  deactivateWorldById: async (worldId: number) => {
+    const { data, error } = await supabase
+      .from('worlds')
+      .update({ is_active: false })
+      .eq('id', worldId)
       .select()
       .single()
 

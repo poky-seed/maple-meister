@@ -2,10 +2,10 @@ import { fetches } from '@/api/fetches'
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 
-export function useGetWorlds() {
+export function useAllGetWorlds() {
   const { data, isLoading } = useQuery({
     queryKey: ['GET', 'WORLD'],
-    queryFn: () => fetches.worlds.getWorlds(),
+    queryFn: () => fetches.worlds.getAllWorlds(),
   })
 
   const worlds = useMemo(() => {
