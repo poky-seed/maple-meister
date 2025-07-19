@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetTrigger } from '@/components/ui/sheet'
 import { CreateItemSheet } from './components'
+import { ItemDataTable } from './components'
 
 export function ManageItemView() {
   return (
@@ -13,6 +14,7 @@ export function ManageItemView() {
           <CreateItemSheet />
         </Sheet>
       </div>
+      <ItemDataTable className="w-full flex-1" />
     </div>
   )
 }

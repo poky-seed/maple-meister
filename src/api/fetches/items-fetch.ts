@@ -7,7 +7,7 @@ const ITEMS_BUCKET = 'item-images'
 
 const getPublicUrl = (filePath: string | null) => {
   if (!filePath) return null
-  return supabase.storage.from('items').getPublicUrl(filePath).data.publicUrl
+  return supabase.storage.from(ITEMS_BUCKET).getPublicUrl(filePath).data.publicUrl
 }
 
 export const itemsFetch = {

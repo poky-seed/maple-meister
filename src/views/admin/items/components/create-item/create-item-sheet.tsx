@@ -52,7 +52,7 @@ export function CreateItemSheet() {
       </div>
       <SheetFooter>
         <Button onClick={createItemHandler} disabled={!file || name.trim() === ''}>
-          아이템 생성
+          아이템 생성하기
         </Button>
       </SheetFooter>
     </SheetContent>
