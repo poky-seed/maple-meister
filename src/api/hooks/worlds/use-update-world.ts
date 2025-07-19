@@ -14,7 +14,7 @@ export function useUpdateWorld() {
 
   const { mutate } = useMutation({
     mutationFn: (params: UpdateWorldParams) =>
-      fetches.worlds.updateWorld(params.worldId, params.request),
+      fetches.worlds.updateWorldById(params.worldId, params.request),
     onSuccess: ({ name }) => {
       toast.success(`${name} 월드가 수정되었습니다.`)
       queryClient.invalidateQueries({ queryKey: ['GET', 'WORLD'] })

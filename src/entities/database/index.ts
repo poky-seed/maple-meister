@@ -19,7 +19,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           id: number
-          image_url: string | null
+          image_path: string | null
           item_type: string
           name: string
           updated_at: string
@@ -29,7 +29,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           id?: never
-          image_url?: string | null
+          image_path?: string | null
           item_type: string
           name: string
           updated_at?: string
@@ -39,7 +39,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           id?: never
-          image_url?: string | null
+          image_path?: string | null
           item_type?: string
           name?: string
           updated_at?: string
@@ -367,7 +367,7 @@ export type Database = {
           created_by: string | null
           id: number
           is_active: boolean
-          logo: string | null
+          logo_path: string | null
           name: string
           updated_at: string
           updated_by: string | null
@@ -377,7 +377,7 @@ export type Database = {
           created_by?: string | null
           id?: never
           is_active?: boolean
-          logo?: string | null
+          logo_path?: string | null
           name: string
           updated_at?: string
           updated_by?: string | null
@@ -387,7 +387,7 @@ export type Database = {
           created_by?: string | null
           id?: never
           is_active?: boolean
-          logo?: string | null
+          logo_path?: string | null
           name?: string
           updated_at?: string
           updated_by?: string | null
@@ -414,18 +414,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      get_recipe_by_id: {
-        Args: { recipe_id: number }
-        Returns: Json
-      }
-      get_recipes: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
-      get_recipes_by_item: {
-        Args: { item_id: number }
-        Returns: Json
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never

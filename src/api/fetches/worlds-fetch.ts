@@ -3,6 +3,13 @@ import type { CreateWorldRequest, UpdateWorldRequest } from '@/api/types/request
 import { v4 as uuidv4 } from 'uuid'
 import { supabase } from '@/lib/supabase'
 
+const WORLD_LOGOS_BUCKET = 'world-logos'
+
+const getPublicUrl = (filePath: string | null) => {
+  if (!filePath) return null
+  return supabase.storage.from(WORLD_LOGOS_BUCKET).getPublicUrl(filePath).data.publicUrl
+}
+
 export const worldsFetch = {
   getWorlds: async (): Promise<World[]> => {
     const { data, error } = await supabase.from('worlds').select('*').eq('is_active', true)
@@ -12,7 +19,7 @@ export const worldsFetch = {
     return data.map((world) => ({
       id: world.id,
       name: world.name,
-      logo: world.logo,
+      logo: getPublicUrl(world.logo_path),
       isActive: world.is_active,
     }))
   },
@@ -25,7 +32,7 @@ export const worldsFetch = {
     return data.map((world) => ({
       id: world.id,
       name: world.name,
-      logo: world.logo,
+      logo: getPublicUrl(world.logo_path),
       isActive: world.is_active,
     }))
   },
@@ -38,31 +45,31 @@ export const worldsFetch = {
     return {
       id: data.id,
       name: data.name,
-      logo: data.logo,
+      logo: getPublicUrl(data.logo_path),
       isActive: data.is_active,
     }
   },
 
   createWorld: async (request: CreateWorldRequest) => {
-    let logoUrl: string | null = null
+    let logoPath: string | null = null
 
     if (request.logo) {
       const file = request.logo
-      const filePath = `world-logos/${Date.now()}-${uuidv4()}`
+      const filePath = `${WORLD_LOGOS_BUCKET}/${uuidv4()}`
 
-      const { error } = await supabase.storage.from('world-logos').upload(filePath, file)
+      const { error } = await supabase.storage.from(WORLD_LOGOS_BUCKET).upload(filePath, file)
 
       if (error) {
         throw error
       }
-      logoUrl = supabase.storage.from('world-logos').getPublicUrl(filePath).data.publicUrl
+      logoPath = filePath
     }
 
     const { data, error } = await supabase
       .from('worlds')
       .insert({
         name: request.name,
-        logo: logoUrl,
+        logo_path: logoPath,
       })
       .select()
       .single()
@@ -101,46 +108,50 @@ export const worldsFetch = {
     return data
   },
 
-  updateWorld: async (worldId: number, request: UpdateWorldRequest) => {
-    const oldWorld = await worldsFetch.getWorldById(worldId)
+  updateWorldById: async (worldId: number, request: UpdateWorldRequest) => {
+    const { data: existingWorld, error: preFetchError } = await supabase
+      .from('worlds')
+      .select('logo_path')
+      .eq('id', worldId)
+      .single()
 
-    let logoUrl: string | null = oldWorld.logo
+    if (preFetchError) {
+      throw preFetchError
+    }
+
+    let logoPath: string | null = existingWorld.logo_path
 
     if (request.logo) {
       const file = request.logo
-      const filePath = `world-logos/${Date.now()}-${uuidv4()}`
+      const filePath = `${WORLD_LOGOS_BUCKET}/${uuidv4()}`
 
-      const { error } = await supabase.storage.from('world-logos').upload(filePath, file)
+      const { error: uploadError } = await supabase.storage
+        .from(WORLD_LOGOS_BUCKET)
+        .upload(filePath, file)
 
-      if (error) {
-        throw error
+      if (uploadError) {
+        throw uploadError
       }
-      logoUrl = supabase.storage.from('world-logos').getPublicUrl(filePath).data.publicUrl
+      logoPath = filePath
     }
 
-    const { data, error } = await supabase
+    const { data, error: updateError } = await supabase
       .from('worlds')
       .update({
         name: request.name,
-        logo: logoUrl,
+        logo_path: logoPath,
       })
       .eq('id', worldId)
       .select()
       .single()
 
-    if (error) {
-      throw error
+    if (updateError) {
+      throw updateError
     }
 
-    if (request.logo && oldWorld.logo) {
+    if (request.logo && existingWorld.logo_path) {
       try {
-        const urlParts = oldWorld.logo.split('/')
-        const bucketIndex = urlParts.findIndex((part) => part === 'world-logos')
-
-        if (bucketIndex !== -1 && bucketIndex < urlParts.length - 1) {
-          const filePath = urlParts.slice(bucketIndex + 1).join('/')
-          await supabase.storage.from('world-logos').remove([filePath])
-        }
+        await supabase.storage.from(WORLD_LOGOS_BUCKET).remove([existingWorld.logo_path])
       } catch {
         console.error('Failed to remove old world logo')
       }

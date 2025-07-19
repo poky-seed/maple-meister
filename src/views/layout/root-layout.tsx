@@ -10,7 +10,7 @@ export function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Outlet />
-        <Toaster />
+        <Toaster duration={1500} position="top-right" />
       </AuthProvider>
     </QueryClientProvider>
   )

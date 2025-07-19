@@ -43,7 +43,9 @@ export function UpdateWorldDialog({ className, prev, onClose }: UpdateWorldDialo
 
     if (dropzone.fileStatuses.length > 0 && dropzone.fileStatuses[0].status === 'success') {
       setFile(dropzone.fileStatuses[0].result)
-      setName(dropzone.fileStatuses[0].result.name.split('.')[0])
+      if (name.trim() === '') {
+        setName(dropzone.fileStatuses[0].result.name.split('.')[0])
+      }
       objectUrl = URL.createObjectURL(dropzone.fileStatuses[0].result)
       setLogoUrl(objectUrl)
       return
