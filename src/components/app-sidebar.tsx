@@ -18,6 +18,7 @@ import {
 } from '@/settings/sidebar'
 import { WorldSwitcher } from './world-switcher'
 import { useGetWorlds } from '@/api/hooks/worlds'
+import { NavLogin } from './nav-login'
 
 const data = {
   user: {
@@ -60,9 +61,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <NavGroup title="ADMIN" items={ADMIN_SIDEBAR_ITEMS} />
         )}
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>
+      <SidebarFooter>{loading || !user ? <NavLogin /> : <NavUser user={user} />}</SidebarFooter>
       <SidebarRail />
     </Sidebar>
   )

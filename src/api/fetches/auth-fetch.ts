@@ -2,7 +2,7 @@ import { supabase } from '@/lib/supabase'
 import { paths } from '@/routers/paths'
 
 export const authFetch = {
-  login: async () => {
+  signIn: async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
