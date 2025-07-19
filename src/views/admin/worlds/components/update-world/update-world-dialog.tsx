@@ -1,23 +1,25 @@
-import { useCreateWorld } from '@/api/hooks/worlds'
+import { useUpdateWorld } from '@/api/hooks/worlds/use-update-world'
 import { Button } from '@/components/ui/button'
-import { DialogContent, DialogFooter, DialogHeader } from '@/components/ui/dialog'
+import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Dropzone, DropZoneArea, DropzoneTrigger, useDropzone } from '@/components/ui/dropzone'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
-import { DialogTitle } from '@radix-ui/react-dialog'
 import { Globe } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import type { World } from '@/entities/worlds'
 
-interface CreateWorldDialogProps {
+interface UpdateWorldDialogProps {
+  prev: World
   className?: string
+  onClose?: () => void
 }
 
-export function CreateWorldDialog({ className }: CreateWorldDialogProps) {
+export function UpdateWorldDialog({ className, prev, onClose }: UpdateWorldDialogProps) {
   const [file, setFile] = useState<File | null>(null)
-  const [name, setName] = useState('')
-  const [logoUrl, setLogoUrl] = useState<string | null>(null)
+  const [name, setName] = useState(prev.name || '')
+  const [logoUrl, setLogoUrl] = useState<string | null>(prev.logo || null)
 
-  const { createWorld } = useCreateWorld()
+  const { updateWorld } = useUpdateWorld()
 
   const dropzone = useDropzone({
     onDropFile: async (file) => {
@@ -39,34 +41,28 @@ export function CreateWorldDialog({ className }: CreateWorldDialogProps) {
   useEffect(() => {
     let objectUrl: string | null = null
 
-    if (file) {
-      objectUrl = URL.createObjectURL(file)
+    if (dropzone.fileStatuses.length > 0 && dropzone.fileStatuses[0].status === 'success') {
+      setFile(dropzone.fileStatuses[0].result)
+      setName(dropzone.fileStatuses[0].result.name.split('.')[0])
+      objectUrl = URL.createObjectURL(dropzone.fileStatuses[0].result)
       setLogoUrl(objectUrl)
       return
     }
-    setLogoUrl(null)
+    setFile(null)
 
     return () => {
       if (objectUrl) {
         URL.revokeObjectURL(objectUrl)
       }
     }
-  }, [file])
-
-  useEffect(() => {
-    if (dropzone.fileStatuses.length > 0 && dropzone.fileStatuses[0].status === 'success') {
-      setFile(dropzone.fileStatuses[0].result)
-      setName(dropzone.fileStatuses[0].result.name.split('.')[0])
-      return
-    }
-    setFile(null)
   }, [dropzone.fileStatuses])
 
-  const createWorldHandler = () => {
-    if (!file || name.trim() === '') {
+  const updateWorldHandler = () => {
+    if (!file && name.trim() === '') {
       return
     }
-    createWorld(
+    updateWorld(
+      prev.id,
       {
         name,
         logo: file,
@@ -75,6 +71,7 @@ export function CreateWorldDialog({ className }: CreateWorldDialogProps) {
         onSuccess: () => {
           setFile(null)
           setName('')
+          onClose?.()
         },
       }
     )
@@ -83,7 +80,7 @@ export function CreateWorldDialog({ className }: CreateWorldDialogProps) {
   return (
     <DialogContent className={cn('w-full max-w-md', className)}>
       <DialogHeader>
-        <DialogTitle>월드 생성</DialogTitle>
+        <DialogTitle>{prev.name} 월드 수정</DialogTitle>
       </DialogHeader>
       <div className="flex gap-2 items-center">
         <Dropzone {...dropzone}>
@@ -107,10 +104,10 @@ export function CreateWorldDialog({ className }: CreateWorldDialogProps) {
       <DialogFooter>
         <Button
           className="w-full"
-          onClick={createWorldHandler}
-          disabled={!file || name.trim() === ''}
+          onClick={updateWorldHandler}
+          disabled={!file && name.trim() === ''}
         >
-          월드 생성하기
+          월드 수정하기
         </Button>
       </DialogFooter>
     </DialogContent>

@@ -8,8 +8,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
-import { CircleCheck, CirclePause, Globe, Pencil } from 'lucide-react'
+import { CircleCheck, CirclePause, Globe } from 'lucide-react'
+import { UpdateWorldDialogTrigger } from '@/views/admin/worlds/components'
 
 interface WorldDataTableProps {
   className?: string
@@ -57,19 +59,35 @@ export function WorldDataTable({ className }: WorldDataTableProps) {
                   </div>
                 </TableCell>
                 <TableCell>
-                  <Button variant="outline" size="icon">
-                    <Pencil />
-                  </Button>
+                  <UpdateWorldDialogTrigger data={world} />
                 </TableCell>
                 <TableCell>
                   {world.isActive ? (
-                    <Button variant="outline" size="icon" onClick={() => deactivateWorld(world.id)}>
-                      <CirclePause className="size-4 text-red-500" />
-                    </Button>
+                    <Tooltip disableHoverableContent>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => deactivateWorld(world.id)}
+                        >
+                          <CirclePause className="size-4 text-red-500" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>월드 비활성화</TooltipContent>
+                    </Tooltip>
                   ) : (
-                    <Button variant="outline" size="icon" onClick={() => activateWorld(world.id)}>
-                      <CircleCheck className="size-4 text-green-600" />
-                    </Button>
+                    <Tooltip disableHoverableContent>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => activateWorld(world.id)}
+                        >
+                          <CircleCheck className="size-4 text-green-600" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>월드 활성화</TooltipContent>
+                    </Tooltip>
                   )}
                 </TableCell>
               </TableRow>

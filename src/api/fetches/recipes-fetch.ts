@@ -1,11 +1,5 @@
-import { createClient } from '@supabase/supabase-js'
-import type { Database } from '@/entities/database'
 import type { Recipe, RecipeSimple } from '@/entities/recipes'
-
-const supabase = createClient<Database>(
-  import.meta.env.VITE_SUPABASE_URL!,
-  import.meta.env.VITE_SUPABASE_ANON_KEY!
-)
+import { supabase } from '@/lib/supabase'
 
 export const recipesFetch = {
   getRecipes: async (): Promise<RecipeSimple[]> => {

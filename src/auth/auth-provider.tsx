@@ -1,13 +1,9 @@
-import { createClient, type Session } from '@supabase/supabase-js'
+import type { Session } from '@supabase/supabase-js'
 import { useEffect, useState, type ReactNode } from 'react'
 import { AuthContext } from '@/auth'
 import { userFetch } from '@/api/fetches/user-fetch'
 import type { User } from '@/entities/user'
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-)
+import { supabase } from '@/lib/supabase'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
