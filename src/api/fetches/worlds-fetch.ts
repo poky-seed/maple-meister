@@ -57,10 +57,12 @@ export const worldsFetch = {
       const file = request.logo
       const filePath = `${WORLD_LOGOS_BUCKET}/${uuidv4()}`
 
-      const { error } = await supabase.storage.from(WORLD_LOGOS_BUCKET).upload(filePath, file)
+      const { error: uploadError } = await supabase.storage
+        .from(WORLD_LOGOS_BUCKET)
+        .upload(filePath, file)
 
-      if (error) {
-        throw error
+      if (uploadError) {
+        throw uploadError
       }
       logoPath = filePath
     }

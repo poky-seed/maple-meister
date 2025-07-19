@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 
 export function useAllGetWorlds() {
   const { data, isLoading } = useQuery({
-    queryKey: ['GET', 'WORLD'],
+    queryKey: ['GET', 'WORLD', 'ALL'],
     queryFn: () => fetches.worlds.getAllWorlds(),
   })
 

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { DropZoneArea, Dropzone, DropzoneTrigger, useDropzone } from '@/components/ui/dropzone'
 import { Image } from 'lucide-react'
+import { useBoolean } from './use-boolean'
 
 interface UseSingleImageUploadOptions {
   size?: number
@@ -12,8 +13,11 @@ export function useSingleImageUpload(options?: UseSingleImageUploadOptions) {
   const [file, setFile] = useState<File | null>(null)
   const [src, setSrc] = useState<string | null>(options?.defaultSrc ?? null)
 
+  const afterDrop = useBoolean()
+
   const dropzone = useDropzone({
     onDropFile: async (file) => {
+      afterDrop.onTrue()
       return {
         status: 'success',
         result: file,
@@ -31,19 +35,27 @@ export function useSingleImageUpload(options?: UseSingleImageUploadOptions) {
 
   useEffect(() => {
     let objectUrl: string | null = null
-    if (dropzone.fileStatuses.length > 0 && dropzone.fileStatuses[0].status === 'success') {
-      setFile(dropzone.fileStatuses[0].result)
-      objectUrl = URL.createObjectURL(dropzone.fileStatuses[0].result)
-      setSrc(objectUrl)
-      return
+
+    if (file) {
+      objectUrl = URL.createObjectURL(file)
     }
-    setFile(null)
+    if (afterDrop.value) {
+      setSrc(objectUrl)
+    }
 
     return () => {
       if (objectUrl) {
         URL.revokeObjectURL(objectUrl)
       }
     }
+  }, [file])
+
+  useEffect(() => {
+    if (dropzone.fileStatuses.length > 0 && dropzone.fileStatuses[0].status === 'success') {
+      setFile(dropzone.fileStatuses[0].result)
+      return
+    }
+    setFile(null)
   }, [dropzone.fileStatuses])
 
   const render = useMemo(() => {

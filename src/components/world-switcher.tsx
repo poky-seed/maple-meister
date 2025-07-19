@@ -14,17 +14,14 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
+import type { World } from '@/entities/worlds'
 
-export function WorldSwitcher({
-  worlds,
-  isLoading,
-}: {
-  worlds: {
-    name: string
-    logo: string | null
-  }[]
+interface WorldSwitcherProps {
+  worlds: World[]
   isLoading?: boolean
-}) {
+}
+
+export function WorldSwitcher({ worlds, isLoading }: WorldSwitcherProps) {
   const { isMobile } = useSidebar()
   const [activeTeam, setActiveTeam] = React.useState(worlds[0])
 

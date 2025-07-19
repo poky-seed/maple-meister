@@ -1,16 +1,5 @@
 import * as React from 'react'
-import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
-} from 'lucide-react'
+import { AudioWaveform, Command, GalleryVerticalEnd } from 'lucide-react'
 
 import { NavGroup } from '@/components/nav-group'
 import { NavUser } from '@/components/nav-user'
@@ -30,7 +19,6 @@ import {
 import { WorldSwitcher } from './world-switcher'
 import { useGetWorlds } from '@/api/hooks/worlds'
 
-// This is sample data.
 const data = {
   user: {
     name: 'shadcn',

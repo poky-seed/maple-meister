@@ -1,6 +1,11 @@
 import type { Recipe, RecipeSimple } from '@/entities/recipes'
 import { supabase } from '@/lib/supabase'
 
+const getPublicUrl = (filePath: string | null) => {
+  if (!filePath) return null
+  return supabase.storage.from('items').getPublicUrl(filePath).data.publicUrl
+}
+
 export const recipesFetch = {
   getRecipes: async (): Promise<RecipeSimple[]> => {
     const { data, error } = await supabase.from('recipes').select(`
@@ -8,7 +13,7 @@ export const recipesFetch = {
         name,
         recipe_type,
         result_items:items!recipes_result_item_id_fkey (
-          image_url
+          image_path
         )
       `)
 
@@ -20,7 +25,7 @@ export const recipesFetch = {
       id: recipe.id,
       name: recipe.name,
       type: recipe.recipe_type,
-      resultItemImageUrl: recipe.result_items?.image_url || '',
+      resultItemImageUrl: getPublicUrl(recipe.result_items?.image_path),
     }))
   },
 
@@ -38,7 +43,7 @@ export const recipesFetch = {
           id,
           name,
           item_type,
-          image_url
+          image_path
         ),
         recipe_materials (
           item_quantity,
@@ -46,7 +51,7 @@ export const recipesFetch = {
             id,
             name,
             item_type,
-            image_url
+            image_path
           )
         )
       `
@@ -68,7 +73,7 @@ export const recipesFetch = {
           id: material.items!.id,
           name: material.items!.name,
           type: material.items!.item_type,
-          imageUrl: material.items!.image_url || '',
+          imageUrl: getPublicUrl(material.items!.image_path),
         },
         quantity: material.item_quantity,
       })),
@@ -76,7 +81,7 @@ export const recipesFetch = {
         id: data.result_items.id,
         name: data.result_items.name,
         type: data.result_items.item_type,
-        imageUrl: data.result_items.image_url || '',
+        imageUrl: getPublicUrl(data.result_items.image_path),
       },
       resultQuantity: data.result_quantity,
     }
